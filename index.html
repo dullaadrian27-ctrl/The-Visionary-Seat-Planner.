@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Visionary Seat Planner | Consulting with AJR</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600;1,700&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,400..500&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+:root{
+  --purple:#9895d3; --purple-deep:#4e4980; --purple-ink:#3a3661; --purple-line:#d9d7ee;
+  --gold:#d09963; --gold-deep:#a8763f; --gold-line:#e8c9a5;
+  --lav:#f3f2fb; --lav-2:#e7e5f6; --cream:#fbf5ee;
+  --ink:#1b1b22; --ink-soft:#4a4856; --grey:#726f80;
+  --paper:#ffffff; --edge:#e4e2ee; --shade:#faf9fd;
+  --display:"Playfair Display",Georgia,serif;
+  --body:"DM Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--shade);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0 0 .8em}
+
+/* ---------- sticky control bar ---------- */
+.bar{position:sticky;top:0;z-index:50;background:var(--paper);border-bottom:1px solid var(--edge)}
+.bar-in{max-width:920px;margin:0 auto;padding:9px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bar .mark{font-family:var(--display);font-weight:700;font-size:.98rem;white-space:nowrap}
+.bar .mark em{font-style:italic;color:var(--purple-deep)}
+.bar .sp{flex:1 1 30px}
+.meter{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.7rem;color:var(--grey);white-space:nowrap}
+.meter-track{width:104px;height:6px;border-radius:99px;background:var(--lav-2);overflow:hidden}
+.meter-fill{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--purple),var(--gold));transition:width .35s ease}
+.saved{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-deep);opacity:0;transition:opacity .3s}
+.saved.on{opacity:1}
+.b{font-family:var(--body);font-size:.74rem;font-weight:600;letter-spacing:.05em;text-transform:uppercase;
+   border:1px solid var(--purple);background:var(--purple);color:#fff;padding:8px 14px;border-radius:3px;cursor:pointer;transition:.15s}
+.b:hover{background:var(--purple-deep);border-color:var(--purple-deep)}
+.b.alt{background:transparent;color:var(--purple-deep);border-color:var(--edge)}
+.b.alt:hover{background:var(--lav);border-color:var(--purple)}
+.b:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+.page{max-width:920px;margin:0 auto;background:var(--paper);border-left:1px solid var(--edge);border-right:1px solid var(--edge);min-height:100vh}
+.inner{padding:0 clamp(20px,5vw,58px)}
+
+/* ---------- cover ---------- */
+.cover{padding:52px clamp(20px,5vw,58px) 40px;border-bottom:1px solid var(--edge);
+  background:linear-gradient(180deg,var(--lav) 0%,var(--paper) 100%)}
+.collection{font-family:var(--mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:24px}
+.strip{display:flex;gap:6px;margin-bottom:26px}
+.strip span{width:40px;height:40px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:1.28rem;font-weight:700;color:var(--purple-deep);
+  background:var(--paper);border:1px solid var(--purple-line);border-radius:2px;opacity:.42}
+.strip span.on{background:var(--purple);color:#fff;border-color:var(--purple);opacity:1;
+  box-shadow:0 0 0 3px rgba(152,149,211,.22)}
+.cover .kicker{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--purple-deep);margin-bottom:10px}
+.cover h1{font-family:var(--display);font-style:italic;font-weight:600;
+  font-size:clamp(2.1rem,6vw,3.4rem);line-height:1.06;letter-spacing:-.015em;color:var(--ink)}
+.cover .tag{margin-top:14px;font-size:1.08rem;color:var(--ink-soft);max-width:56ch}
+.cover .how{margin-top:26px;padding-top:20px;border-top:1px solid var(--gold-line);
+  font-size:.93rem;color:var(--grey);max-width:62ch}
+
+/* ---------- right-size block ---------- */
+.rs{border:1px solid var(--purple-line);border-top:4px solid var(--purple);background:var(--lav);
+  border-radius:3px;padding:20px 22px;margin:34px 0 8px}
+.rs .rt{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:9px}
+.rs h3{font-family:var(--display);font-size:1.24rem;font-weight:700;color:var(--purple-ink);margin-bottom:8px}
+.rs p{font-size:.95rem;color:var(--ink-soft)}
+.rs p:last-child{margin-bottom:0}
+.pick{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 0}
+.pick label{cursor:pointer}
+.pick input{position:absolute;opacity:0;width:1px;height:1px}
+.pick span{display:inline-block;font-size:.87rem;font-weight:600;padding:9px 15px;border:1px solid var(--purple-line);
+  border-radius:3px;background:var(--paper);color:var(--purple-deep);transition:.12s;
+  print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.pick label:hover span{border-color:var(--purple)}
+.pick input:focus-visible+span{outline:2px solid var(--gold);outline-offset:2px}
+.pick input:checked+span{background:var(--purple-deep);border-color:var(--purple-deep);color:#fff}
+.pick input:checked+span::before{content:"\2713  "}
+.rsnote{margin-top:14px;padding:13px 16px;background:var(--paper);border-left:4px solid var(--gold);
+  border-radius:2px;font-size:.93rem;color:var(--ink-soft)}
+.rsnote b{color:var(--purple-ink)}
+
+/* ---------- exercise bar ---------- */
+.xbar{background:var(--lav);border-left:5px solid var(--purple);margin:44px 0 20px;padding:13px 20px;border-radius:2px;
+  display:flex;align-items:baseline;gap:13px;flex-wrap:wrap}
+.xbar .n{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep)}
+.xbar h2{font-family:var(--display);font-size:1.42rem;font-weight:700;color:var(--purple-ink);line-height:1.2}
+.lede{color:var(--ink-soft);max-width:66ch;margin-bottom:18px}
+
+/* ---------- callouts ---------- */
+.call{border:1px solid var(--gold-line);border-left:5px solid var(--gold);background:var(--cream);
+  padding:16px 20px;border-radius:2px;margin:22px 0}
+.call .ct{font-family:var(--mono);font-size:.66rem;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:7px}
+.call p:last-child{margin-bottom:0}
+.call.sm{border-left-color:var(--purple);border-color:var(--purple-line);background:var(--lav)}
+.call.sm .ct{color:var(--purple-deep)}
+.pull{border-left:5px solid var(--purple);background:var(--lav);padding:20px 24px;margin:26px 0;border-radius:2px}
+.pull p{font-family:var(--display);font-size:1.16rem;font-style:italic;font-weight:600;color:var(--purple-ink);margin:0;line-height:1.4}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;margin:18px 0;border:1px solid var(--edge);border-radius:3px}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:.9rem}
+th{background:var(--purple-deep);color:#fff;text-align:left;font-size:.66rem;letter-spacing:.1em;text-transform:uppercase;
+   font-weight:600;padding:11px 12px;vertical-align:bottom;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+td{padding:0;border-top:1px solid var(--edge);vertical-align:middle}
+td.lbl{padding:11px 13px;font-weight:600;font-size:.92rem;white-space:nowrap;background:var(--shade);width:1%}
+tbody tr:nth-child(even) td.lbl{background:var(--lav)}
+input.cell{width:100%;border:none;background:transparent;padding:11px 12px;font-family:var(--body);font-size:.92rem;color:var(--ink);
+  border-left:1px solid var(--edge);min-height:44px}
+input.cell:focus{outline:none;background:var(--lav);box-shadow:inset 0 -2px 0 var(--gold)}
+input.cell::placeholder{color:#b9b6c6;font-style:italic}
+
+/* ---------- form fields ---------- */
+.field{margin:16px 0}
+.field label{display:block;font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--purple-deep);margin-bottom:6px}
+.field .hint{font-size:.85rem;color:var(--grey);margin:-2px 0 7px;font-style:italic}
+input.line,textarea.area{width:100%;font-family:var(--body);font-size:1rem;color:var(--ink);background:var(--paper);
+  border:1px solid var(--edge);border-radius:3px;padding:11px 13px}
+textarea.area{resize:vertical;min-height:74px;line-height:1.55;overflow:hidden}
+input.line:focus,textarea.area:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(152,149,211,.18)}
+input.line::placeholder,textarea.area::placeholder{color:#b9b6c6;font-style:italic}
+
+/* numeric rows */
+.numrow{display:grid;grid-template-columns:1fr 172px;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--edge)}
+.numrow:last-child{border-bottom:none}
+.numrow .nl{font-size:.98rem;font-weight:600}
+.numrow .nl small{display:block;font-weight:400;font-size:.82rem;color:var(--grey);margin-top:2px}
+.numrow input{width:100%;font-family:var(--mono);font-size:1rem;text-align:right;font-variant-numeric:tabular-nums;
+  border:1px solid var(--edge);border-radius:3px;padding:10px 12px;background:var(--paper);color:var(--ink)}
+.numrow input:focus{outline:none;border-color:var(--purple);box-shadow:0 0 0 3px rgba(152,149,211,.18)}
+.numrow.calc{background:var(--lav);margin:0 -14px;padding:12px 14px;border-bottom:1px solid var(--lav-2);border-radius:2px}
+.numrow.calc .nl{color:var(--purple-ink)}
+.numrow .out{font-family:var(--mono);font-size:1.14rem;font-weight:600;text-align:right;color:var(--purple-deep);font-variant-numeric:tabular-nums}
+.numrow .out.big{font-size:1.34rem;color:var(--gold-deep)}
+.numrow .out em{font-style:normal;color:#b9b6c6;font-weight:400}
+
+/* ---------- rating rows ---------- */
+.rate{display:grid;grid-template-columns:26px 1fr auto;gap:12px;align-items:center;
+  padding:9px 12px;border:1px solid var(--edge);border-radius:3px;margin-bottom:5px;background:var(--paper)}
+.rate:nth-child(even){background:var(--shade)}
+.rate.na{opacity:.5}
+.rate .rn{font-family:var(--mono);font-size:.74rem;color:var(--grey);text-align:right}
+.rate .rq{font-size:.95rem;line-height:1.4}
+.opts{display:flex;gap:5px;flex:0 0 auto}
+.opts label{cursor:pointer}
+.opts input{position:absolute;opacity:0;width:1px;height:1px}
+.opts span{display:inline-block;font-family:var(--mono);font-size:.64rem;font-weight:600;letter-spacing:.05em;
+  padding:6px 9px;border:1px solid var(--edge);border-radius:2px;color:var(--grey);background:var(--paper);
+  min-width:42px;text-align:center;transition:.12s;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.opts label:hover span{border-color:var(--purple);color:var(--purple-deep)}
+.opts input:focus-visible+span{outline:2px solid var(--gold);outline-offset:1px}
+.opts input:checked+span{color:#fff;border-width:2px;padding:5px 8px}
+.opts input:checked+span.v0{background:#4f8a63;border-color:#4f8a63}
+.opts input:checked+span.v1{background:var(--gold);border-color:var(--gold-deep)}
+.opts input:checked+span.v2{background:var(--purple-deep);border-color:var(--purple-deep)}
+.opts input:checked+span.vx{background:var(--grey);border-color:var(--grey)}
+.opts input:checked+span::before{content:"\2713 "}
+
+/* score panel */
+.score{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--edge);
+  border:1px solid var(--edge);border-radius:3px;overflow:hidden;margin:24px 0}
+.score div{background:var(--paper);padding:16px 18px}
+.score .k{font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-deep);margin-bottom:6px}
+.score .v{font-family:var(--display);font-size:1.9rem;font-weight:700;line-height:1;color:var(--purple-ink);font-variant-numeric:tabular-nums}
+.score .s{font-size:.84rem;color:var(--grey);margin-top:5px;line-height:1.4}
+.score .v.band{font-size:1.14rem;line-height:1.25}
+
+/* three-column planner */
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;margin:20px 0}
+.col{border:1px solid var(--edge);border-radius:3px;overflow:hidden;background:var(--paper)}
+.col .ch{padding:13px 16px;background:var(--lav);border-bottom:1px solid var(--edge)}
+.col .ch b{display:block;font-family:var(--display);font-size:1.16rem;font-weight:700;color:var(--purple-ink)}
+.col .ch span{display:block;font-size:.84rem;color:var(--grey);margin-top:3px;line-height:1.4}
+.col .cb{padding:10px 14px 14px}
+.col input{width:100%;border:none;border-bottom:1px solid var(--edge);padding:9px 2px;font-family:var(--body);font-size:.93rem;background:transparent;color:var(--ink)}
+.col input:focus{outline:none;border-bottom-color:var(--gold);border-bottom-width:2px}
+.col input::placeholder{color:#c6c3d1}
+
+/* two-list sorter */
+.sorter{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin:20px 0}
+.sorter .sc{border:1px solid var(--edge);border-radius:3px;overflow:hidden}
+.sorter .sc.choice{border-top:4px solid #4f8a63}
+.sorter .sc.default{border-top:4px solid var(--gold)}
+.sorter .sh{padding:13px 16px;background:var(--shade);border-bottom:1px solid var(--edge)}
+.sorter .sh b{display:block;font-family:var(--display);font-size:1.1rem;font-weight:700;color:var(--purple-ink)}
+.sorter .sh span{display:block;font-size:.84rem;color:var(--grey);margin-top:3px;line-height:1.4}
+.sorter .sb{padding:10px 14px 14px}
+.sorter input{width:100%;border:none;border-bottom:1px solid var(--edge);padding:9px 2px;font-size:.93rem;background:transparent;color:var(--ink);font-family:var(--body)}
+.sorter input:focus{outline:none;border-bottom-color:var(--gold);border-bottom-width:2px}
+.sorter input::placeholder{color:#c6c3d1}
+
+ol.steps{counter-reset:s;list-style:none;padding:0;margin:18px 0}
+ol.steps>li{counter-increment:s;position:relative;padding-left:42px;margin-bottom:20px}
+ol.steps>li::before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:50%;
+  background:var(--gold);color:#fff;font-family:var(--mono);font-size:.8rem;font-weight:600;
+  display:flex;align-items:center;justify-content:center;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ol.steps>li>b{display:block;margin-bottom:6px;font-size:1rem}
+
+footer{margin-top:56px;padding:26px clamp(20px,5vw,58px) 44px;border-top:3px solid var(--gold);
+  display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+footer .fl{font-family:var(--display);font-style:italic;font-weight:600;font-size:1.02rem;color:var(--purple-deep)}
+footer .fr{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--grey)}
+
+@media (max-width:640px){
+  .rate{grid-template-columns:22px 1fr;row-gap:9px}
+  .rate .opts{grid-column:1/-1;justify-content:flex-start;flex-wrap:wrap}
+  .numrow{grid-template-columns:1fr;gap:6px}
+  .numrow input,.numrow .out{text-align:left}
+}
+@media print{
+  body{background:#fff;font-size:10.5pt}
+  .bar{display:none!important}
+  .page{max-width:none;border:none}
+  .cover{background:#fff;padding-top:0}
+  .xbar,.call,.pull,.score,.col,.rate,.numrow,.rs,ol.steps>li,tr{page-break-inside:avoid}
+  input.line,textarea.area,input.cell,.numrow input{border-color:#bbb!important;box-shadow:none!important}
+  textarea.area{min-height:0}
+  .b{display:none}
+  a{text-decoration:none;color:inherit}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head><body>
+
+<div class="bar"><div class="bar-in">
+  <div class="mark">BUILD&trade; <em>Resource Collection</em></div>
+  <div class="sp"></div>
+  <span class="saved" id="saved">Saved</span>
+  <div class="meter"><span id="mtxt">0% complete</span><span class="meter-track"><span class="meter-fill" id="mfill"></span></span></div>
+  <button class="b alt" id="clearbtn" type="button">Clear</button>
+  <button class="b" id="pdfbtn" type="button">Download PDF</button>
+</div></div>
+
+<div class="page">
+<header class="cover">
+  <div class="collection">The Childcare CEO BUILD&trade; Assessment &nbsp;&middot;&nbsp; Resource Collection</div>
+  <div class="strip"><span class="">B</span><span class="">U</span><span class="">I</span><span class="">L</span><span class="on">D</span></div>
+  <div class="kicker">D &nbsp;&middot;&nbsp; Design the Legacy</div>
+  <h1>The Visionary <br>Seat Planner</h1>
+  <div class="tag">If your program didn&rsquo;t need you for everything... what would you build next?</div>
+  <div class="how">Work through the three columns first, then design your 12-month role. Your answers save automatically in this browser. Download the PDF when you are done.</div>
+</header>
+<div class="inner">
+<div class="rs"><div class="rt">Before you start</div><h3>Right-size this for your program</h3><p>This is not a worksheet about leaving. Some owners are building toward a Visionary seat with no operations in it at all. Others want to keep teaching every morning and simply stop being the one who fixes everything. Both are real answers, and this planner is built to hold either one.</p></div>
+<div class="xbar"><span class="n">Exercise 1</span><h2>Keep, transfer, create</h2></div><p class="lede">If your program did not need you for everything... what would you build next? Start here, before you touch a calendar or an org chart.</p><div class="cols"><div class="col"><div class="ch"><b>KEEP</b><span>What do I love doing and intentionally want to continue?</span></div><div class="cb"><input type="text" data-f="k_0" placeholder="1."><input type="text" data-f="k_1" placeholder="2."><input type="text" data-f="k_2" placeholder="3."><input type="text" data-f="k_3" placeholder="4."><input type="text" data-f="k_4" placeholder="5."><input type="text" data-f="k_5" placeholder="6."></div></div><div class="col"><div class="ch"><b>TRANSFER</b><span>What am I currently doing that someone else should own?</span></div><div class="cb"><input type="text" data-f="t_0" placeholder="1."><input type="text" data-f="t_1" placeholder="2."><input type="text" data-f="t_2" placeholder="3."><input type="text" data-f="t_3" placeholder="4."><input type="text" data-f="t_4" placeholder="5."><input type="text" data-f="t_5" placeholder="6."></div></div><div class="col"><div class="ch"><b>CREATE</b><span>What am I not doing because operations consume my time?</span></div><div class="cb"><input type="text" data-f="c_0" placeholder="1."><input type="text" data-f="c_1" placeholder="2."><input type="text" data-f="c_2" placeholder="3."><input type="text" data-f="c_3" placeholder="4."><input type="text" data-f="c_4" placeholder="5."><input type="text" data-f="c_5" placeholder="6."></div></div></div><div class="call "><div class="ct">Most people rush this</div><p>They skip to TRANSFER because it feels productive, and they leave KEEP and CREATE half empty.</p><p>Those two columns are the actual work. TRANSFER is just logistics.</p></div><div class="call sm"><div class="ct">Teaching can go in the KEEP column</div><p>Nothing about this says you have to leave the classroom, the floor, or the children.</p><p>Plenty of owners want to stay in ratio in the morning and be the CEO in the afternoon. That is a designed role, not a failure to scale. The problem was never being in your program. The problem is your program falling apart when you are not.</p></div><div class="xbar"><span class="n">Exercise 2</span><h2>Design your 12-month role</h2></div><p class="lede">Not the role you have. The role you are building toward. Write it as if it is already decided.</p><div class="field"><label for="v_care">In 12 months, what % of my week do I want to spend in direct care or the classroom?</label><div class="hint">Zero is a legitimate answer. So is sixty.</div><input class="line" type="text" id="v_care" data-f="v_care" placeholder="e.g. 25%"></div><div class="field"><label for="v_ops">And what % running day-to-day operations?</label><div class="hint">Coverage, complaints, scheduling, putting out fires. This is the number most owners want lower.</div><input class="line" type="text" id="v_ops" data-f="v_ops" placeholder="e.g. 10%"></div><div class="field"><label for="v_role">I want my primary role to be</label><input class="line" type="text" id="v_role" data-f="v_role" placeholder="e.g. Executive Director leading my team, teaching two mornings a week"></div><div class="field"><label for="v_only">Three things ONLY I should own</label><div class="hint">The things that genuinely require the owner. Not the things you happen to be best at.</div><textarea class="area" id="v_only" data-f="v_only" placeholder="1.
+2.
+3."></textarea></div><div class="field"><label for="v_stop">Three things I need to stop owning</label><textarea class="area" id="v_stop" data-f="v_stop" placeholder="1.
+2.
+3."></textarea></div><div class="field"><label for="v_ten">If I reclaimed 10 hours per week, I would</label><div class="hint">Be specific. “Rest” counts, but say what rest actually looks like.</div><textarea class="area" id="v_ten" data-f="v_ten" placeholder=""></textarea></div><div class="xbar"><span class="n">Exercise 3</span><h2>The bigger question</h2></div><div class="field"><label for="v_life">What do I want this program to make possible for my LIFE?</label><textarea class="area" id="v_life" data-f="v_life" placeholder=""></textarea></div><div class="field"><label for="v_beyond">What am I building beyond the program I already have?</label><div class="hint">Expansion. Real estate. Another site. Another company. Consulting. Succession. Investments. Impact. Or simply more of the work that makes you feel alive.</div><textarea class="area" id="v_beyond" data-f="v_beyond" placeholder=""></textarea></div><div class="field"><label for="v_first">What is the very first move, and when?</label><div class="hint">One move. With a date on it.</div><textarea class="area" id="v_first" data-f="v_first" placeholder=""></textarea></div><div class="pull"><p>Your legacy isn&rsquo;t only what you leave behind. It&rsquo;s also what your business allows you to live right now.</p></div>
+</div>
+<footer>
+  <div class="fl">Build the business. Lead the company. Design the legacy.</div>
+  <div class="fr">consultingwithajr.com</div>
+</footer>
+</div>
+
+<script>
+(function(){
+  var KEY='ajr-build-legacy-v2';
+  var store={};
+  try{store=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){store={}}
+  var t=null;
+  function flash(){var s=document.getElementById('saved');if(!s)return;s.classList.add('on');clearTimeout(t);t=setTimeout(function(){s.classList.remove('on')},1300);}
+  function write(){try{localStorage.setItem(KEY,JSON.stringify(store));flash();}catch(e){}}
+
+  var fields=[].slice.call(document.querySelectorAll('[data-f]'));
+  var radios=[].slice.call(document.querySelectorAll('input[type=radio][name]'));
+  function grow(el){if(el.tagName==='TEXTAREA'){el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';}}
+
+  function meter(){
+    var n=0,d=0;
+    fields.forEach(function(el){
+      d++;
+      if(el.type==='checkbox'){if(el.checked)n++;}
+      else if((el.value||'').trim()!==''){n++;}
+    });
+    var g={};
+    radios.forEach(function(r){if(r.name==='setup')return; g[r.name]=g[r.name]||false; if(r.checked)g[r.name]=true;});
+    Object.keys(g).forEach(function(k){d++; if(g[k])n++;});
+    var p=d?Math.round(n/d*100):0;
+    var mt=document.getElementById('mtxt'),mf=document.getElementById('mfill');
+    if(mt)mt.textContent=p+'% complete';
+    if(mf)mf.style.width=p+'%';
+  }
+
+  // ---- role-word swap driven by the Right-Size selector ----
+  var ROLE={
+    dir:{w:'Director',p:'your Director',
+      note:'<b>Good.</b> This is written for exactly that setup. Rate what your Director actually owns today, not what her job description says.'},
+    lead:{w:'lead teacher',p:'your lead teacher',
+      note:'<b>Perfect.</b> Everywhere this says Director, read it as your lead teacher, your assistant, or whoever holds things when you step away. The question is identical: what do they actually own?'},
+    me:{w:'right hand',p:'your right hand',
+      note:'<b>Then read this differently.</b> You are not auditing somebody else. You are finding the first two or three things that could belong to someone else, even part-time, even a few hours a week, even a contractor. That is where every owner starts, and it is a completely legitimate place to be.'}
+  };
+  function applyRole(v){
+    var r=ROLE[v]||ROLE.dir;
+    [].slice.call(document.querySelectorAll('.rw')).forEach(function(el){el.textContent=r.w;});
+    [].slice.call(document.querySelectorAll('.rwp')).forEach(function(el){el.textContent=r.p;});
+    var n=document.getElementById('rsnote');
+    if(n){n.innerHTML=r.note;n.style.display='block';}
+    document.body.setAttribute('data-setup',v||'');
+  }
+
+  fields.forEach(function(el){
+    el.addEventListener(el.type==='checkbox'?'change':'input',function(){
+      store[el.dataset.f]=(el.type==='checkbox')?el.checked:el.value;
+      write(); meter(); grow(el); if(window.recalc)window.recalc();
+    });
+  });
+  radios.forEach(function(r){
+    r.addEventListener('change',function(){
+      store['r:'+r.name]=r.value; write(); meter();
+      if(r.name==='setup')applyRole(r.value);
+      if(window.recalc)window.recalc();
+    });
+  });
+
+  fields.forEach(function(el){
+    var v=store[el.dataset.f];
+    if(v===undefined||v===null)return;
+    if(el.type==='checkbox')el.checked=!!v; else {el.value=v; grow(el);}
+  });
+  radios.forEach(function(r){ if(store['r:'+r.name]===r.value) r.checked=true; });
+  if(store['r:setup'])applyRole(store['r:setup']);
+  meter();
+  if(window.recalc)window.recalc();
+
+  var cb=document.getElementById('clearbtn');
+  if(cb)cb.addEventListener('click',function(){
+    if(!confirm('Clear everything you have typed on this worksheet? This cannot be undone.'))return;
+    store={}; try{localStorage.removeItem(KEY)}catch(e){}
+    fields.forEach(function(el){ if(el.type==='checkbox')el.checked=false; else {el.value='';grow(el);} });
+    radios.forEach(function(r){r.checked=false;});
+    var n=document.getElementById('rsnote'); if(n)n.style.display='none';
+    document.body.removeAttribute('data-setup');
+    meter(); if(window.recalc)window.recalc();
+  });
+  var pb=document.getElementById('pdfbtn');
+  if(pb)pb.addEventListener('click',function(){
+    [].slice.call(document.querySelectorAll('textarea')).forEach(grow);
+    window.print();
+  });
+})();
+
+</script>
+</body></html>
+
